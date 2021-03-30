@@ -67,8 +67,8 @@ public class LegacyCameraConnectionFragment extends Fragment {
         public void onSurfaceTextureAvailable(
             final SurfaceTexture texture, final int width, final int height) {
 
-          int index = getCameraId();
-          camera = Camera.open(index);
+          //int index = getCameraId();
+          //camera = Camera.open(2);
 
           try {
             Camera.Parameters parameters = camera.getParameters();

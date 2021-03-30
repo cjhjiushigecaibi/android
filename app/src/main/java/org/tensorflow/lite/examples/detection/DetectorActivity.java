@@ -134,7 +134,7 @@ public class DetectorActivity extends CameraActivity implements OnImageAvailable
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
-
+//右上角添加人脸信息
     fabAdd = findViewById(R.id.fab_add);
     fabAdd.setOnClickListener(new View.OnClickListener() {
       @Override
@@ -151,17 +151,11 @@ public class DetectorActivity extends CameraActivity implements OnImageAvailable
                     .setClassificationMode(FaceDetectorOptions.CLASSIFICATION_MODE_NONE)
                     .build();
 
-
     FaceDetector detector = FaceDetection.getClient(options);
 
     faceDetector = detector;
-
-
     //checkWritePermission();
-
   }
-
-
 
   private void onAddClick() {
 
@@ -219,6 +213,7 @@ public class DetectorActivity extends CameraActivity implements OnImageAvailable
       targetW = previewWidth;
       targetH = previewHeight;
     }
+    //裁剪画幅
     int cropW = (int) (targetW / 2.0);
     int cropH = (int) (targetH / 2.0);
 
@@ -266,7 +261,7 @@ public class DetectorActivity extends CameraActivity implements OnImageAvailable
     tracker.setFrameConfiguration(previewWidth, previewHeight, sensorOrientation);
   }
 
-
+//图像处理
   @Override
   protected void processImage() {
     ++timestamp;
@@ -285,7 +280,6 @@ public class DetectorActivity extends CameraActivity implements OnImageAvailable
     rgbFrameBitmap.setPixels(getRgbBytes(), 0, previewWidth, 0, 0, previewWidth, previewHeight);
 
     readyForNextImage();
-
     final Canvas canvas = new Canvas(croppedBitmap);
     canvas.drawBitmap(rgbFrameBitmap, frameToCropTransform, null);
     // For examining the actual TF input.
@@ -312,10 +306,7 @@ public class DetectorActivity extends CameraActivity implements OnImageAvailable
                           }
                         });
               }
-
             });
-
-
   }
 
   @Override
@@ -344,7 +335,6 @@ public class DetectorActivity extends CameraActivity implements OnImageAvailable
     runInBackground(() -> detector.setNumThreads(numThreads));
   }
 
-
   // Face Processing
   private Matrix createTransform(
           final int srcWidth,
@@ -352,7 +342,6 @@ public class DetectorActivity extends CameraActivity implements OnImageAvailable
           final int dstWidth,
           final int dstHeight,
           final int applyRotation) {
-
     Matrix matrix = new Matrix();
     if (applyRotation != 0) {
       if (applyRotation % 90 != 0) {
@@ -382,6 +371,7 @@ public class DetectorActivity extends CameraActivity implements OnImageAvailable
 
   }
 
+  //添加新的人脸
   private void showAddFaceDialog(SimilarityClassifier.Recognition rec) {
 
     AlertDialog.Builder builder = new AlertDialog.Builder(this);
@@ -442,6 +432,7 @@ public class DetectorActivity extends CameraActivity implements OnImageAvailable
 
   }
 
+  //画框
   private void onFacesDetected(long currTimestamp, List<Face> faces, boolean add) {
 
     cropCopyBitmap = Bitmap.createBitmap(croppedBitmap);

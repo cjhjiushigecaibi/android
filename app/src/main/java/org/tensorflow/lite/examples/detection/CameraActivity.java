@@ -91,7 +91,6 @@ public abstract class CameraActivity extends AppCompatActivity
   private SwitchCompat apiSwitchCompat;
   private TextView threadsTextView;
 
-  private FloatingActionButton btnSwitchCam;
 
   private static final String KEY_USE_FACING = "use_facing";
   private Integer useFacing = null;
@@ -103,7 +102,6 @@ public abstract class CameraActivity extends AppCompatActivity
 
 
 
-
   @Override
   protected void onCreate(final Bundle savedInstanceState) {
     LOGGER.d("onCreate " + this);
@@ -111,7 +109,7 @@ public abstract class CameraActivity extends AppCompatActivity
 
     Intent intent = getIntent();
     //useFacing = intent.getIntExtra(KEY_USE_FACING, CameraCharacteristics.LENS_FACING_FRONT);
-    useFacing = intent.getIntExtra(KEY_USE_FACING, CameraCharacteristics.LENS_FACING_BACK);
+    useFacing = intent.getIntExtra(KEY_USE_FACING, CameraCharacteristics.LENS_FACING_FRONT);
 
     getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 
@@ -126,6 +124,7 @@ public abstract class CameraActivity extends AppCompatActivity
       requestPermission();
     }
 
+    //bottomsheet   start
     threadsTextView = findViewById(R.id.threads);
     plusImageView = findViewById(R.id.plus);
     minusImageView = findViewById(R.id.minus);
@@ -135,7 +134,6 @@ public abstract class CameraActivity extends AppCompatActivity
     sheetBehavior = BottomSheetBehavior.from(bottomSheetLayout);
     bottomSheetArrowImageView = findViewById(R.id.bottom_sheet_arrow);
 
-    btnSwitchCam = findViewById(R.id.fab_switchcam);
 
     ViewTreeObserver vto = gestureLayout.getViewTreeObserver();
     vto.addOnGlobalLayoutListener(
@@ -188,62 +186,35 @@ public abstract class CameraActivity extends AppCompatActivity
     cropValueTextView = findViewById(R.id.crop_info);
     inferenceTimeTextView = findViewById(R.id.inference_info);
 
+
     apiSwitchCompat.setOnCheckedChangeListener(this);
 
     plusImageView.setOnClickListener(this);
     minusImageView.setOnClickListener(this);
 
-    btnSwitchCam.setOnClickListener(new View.OnClickListener() {
-      @Override
-      public void onClick(View v) {
-        onSwitchCamClick();
-      }
-    });
-
   }
+    //bottomsheet   end
 
-  private void onSwitchCamClick() {
 
-    switchCamera();
-
-  }
-
-  public void switchCamera() {
-
-    Intent intent = getIntent();
-
-    if (useFacing == CameraCharacteristics.LENS_FACING_FRONT) {
-      useFacing = CameraCharacteristics.LENS_FACING_BACK;
-    } else {
-      useFacing = CameraCharacteristics.LENS_FACING_FRONT;
-    }
-
-    intent.putExtra(KEY_USE_FACING, useFacing);
-    intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
-
-    restartWith(intent);
-
-  }
-
-  private void restartWith(Intent intent) {
+  /*private void restartWith(Intent intent) {
     finish();
     overridePendingTransition(0, 0);
     startActivity(intent);
     overridePendingTransition(0, 0);
-  }
+  }*/
 
   protected int[] getRgbBytes() {
     imageConverter.run();
     return rgbBytes;
   }
 
-  protected int getLuminanceStride() {
-    return yRowStride;
-  }
-
-  protected byte[] getLuminance() {
-    return yuvBytes[0];
-  }
+//  protected int getLuminanceStride() {
+//    return yRowStride;
+//  }
+//
+//  protected byte[] getLuminance() {
+//    return yuvBytes[0];
+//  }
 
   /** Callback for android.hardware.Camera API */
   @Override
@@ -297,6 +268,7 @@ public abstract class CameraActivity extends AppCompatActivity
   }
 
   /** Callback for Camera2 API */
+  //获取屏幕数据并处理
   @Override
   public void onImageAvailable(final ImageReader reader) {
     // We need wait until we have some size from onPreviewSizeChosen
@@ -577,7 +549,7 @@ public abstract class CameraActivity extends AppCompatActivity
       postInferenceCallback.run();
     }
   }
-
+//获取屏幕方向
   protected int getScreenOrientation() {
     switch (getWindowManager().getDefaultDisplay().getRotation()) {
       case Surface.ROTATION_270:
